@@ -1,0 +1,48 @@
+NEW_FILE_CODE
+services:
+  - type: web
+    name: bidhub-backend
+    env: node
+    region: oregon
+    plan: free
+    branch: main
+    buildCommand: npm install && npm run build
+    startCommand: npm run start:prod
+    healthCheckPath: /
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: DB_HOST
+        fromDatabase:
+          name: bidhub-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: bidhub-db
+          property: port
+      - key: DB_USERNAME
+        fromDatabase:
+          name: bidhub-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: bidhub-db
+          property: password
+      - key: DB_NAME
+        fromDatabase:
+          name: bidhub-db
+          property: database
+      - key: JWT_SECRET
+        sync: false
+      - key: JWT_EXPIRATION
+        value: 7d
+
+databases:
+  - name: bidhub-db
+    databaseName: bidhub
+    user: bidhub_user
+    plan: free
+    region: oregon
+    postgresMajorVersion: "15"
