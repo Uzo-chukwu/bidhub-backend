@@ -2,6 +2,8 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { AuctionsModule } from './auctions/auctions.module';
@@ -26,6 +28,9 @@ import { AdminModule } from './admin/admin.module';
         database: configService.get<string>('DB_NAME'),
         autoLoadEntities: true,
         synchronize: true,
+        ssl: configService.get<string>('NODE_ENV') === 'production' ? {
+          rejectUnauthorized: false
+        } : false,
       }),
     }),
 
@@ -35,5 +40,7 @@ import { AdminModule } from './admin/admin.module';
     BidsModule,
     AdminModule,
   ],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {}
